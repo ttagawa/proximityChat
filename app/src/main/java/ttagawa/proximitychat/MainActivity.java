@@ -1,9 +1,11 @@
 package ttagawa.proximitychat;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -30,12 +32,21 @@ public class MainActivity extends AppCompatActivity {
         if(provider==null){
             Toast.makeText(this,"no provider",Toast.LENGTH_LONG);
         }else {
-            location = locationManager.getLastKnownLocation(provider);
+            try {
+                location = locationManager.getLastKnownLocation(provider);
+            }catch (SecurityException e){
+                Log.i(TAG,"get location failed.");
+            }
             Log.i(TAG, "is gps enabled:" + locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
             Log.i(TAG, "is network enabled:" + locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
-            Log.i(TAG, "location: " + location.getAccuracy());
+         //   Log.i(TAG, "location: " + location.getAccuracy());
         }
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        String userId = settings.getString("user_id", "");
+        Log.i(TAG,"user_id:"+userId);
         ed = (EditText) findViewById(R.id.editText);
+        ed.setText(userId);
         ed.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -60,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void startChat(View v){
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = settings.edit();
+        String userId = settings.getString("user_id", "");
+        editor.putString("user_id",ed.getText().toString().trim());
+        editor.commit();
+        Log.i(TAG,"user_id:"+userId);
         Intent intent = new Intent(this, MessageActivity.class);
         startActivity(intent);
     }
