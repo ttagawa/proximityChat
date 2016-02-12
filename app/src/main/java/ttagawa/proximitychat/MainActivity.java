@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 10, locationListener);
             Log.i(TAG, "is gps enabled:" + locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
             Log.i(TAG, "is network enabled:" + locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
             if(loc!=null)
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-        if(!ed.getText().toString().trim().equals("")){
+        if(accurate&&!ed.getText().toString().trim().equals("")){
             button.setVisibility(View.VISIBLE);
         }else{
             button.setVisibility(View.INVISIBLE);
@@ -127,15 +127,14 @@ public class MainActivity extends AppCompatActivity {
         }
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) ==
                 PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 35000, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 10, locationListener);
         }
         super.onResume();
     }
-    @Override
+  /*  @Override
     public void onDestroy(){
         super.onDestroy();
-
-    }
+    }*/
 
     LocationListener locationListener = new LocationListener() {
         @Override

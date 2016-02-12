@@ -87,9 +87,16 @@ public class MessageActivity extends AppCompatActivity {
         queryResponseCall.enqueue(new Callback<Post>() {
             @Override
             public void onResponse(Response<Post> response) {
-                ed.setText("");
                 Log.i(LOG_TAG, "Code is: " + response.code());
-                Log.i(LOG_TAG, "The result is: " + response.body());
+                if(response.code() == 200) {
+                    ed.setText("");
+                    Log.i(LOG_TAG, "The result is: " + response.body());
+                }else if(response.code() == 500){
+                    Toast.makeText(MessageActivity.this,"Server error, please try again.",Toast.LENGTH_LONG).show();
+                }else if(response.body().result.equals("nok"));{
+                    Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
+                    Log.i(LOG_TAG, "The result is: " + response.body());
+                }
             }
 
             @Override
@@ -126,13 +133,20 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<GetMessages> response) {
                 Log.i(LOG_TAG, "Code is: " + response.code());
-                Log.i(LOG_TAG, "The result is: " + response.body());
+                if(response.code() == 200) {
+                    Log.i(LOG_TAG, "The result is: " + response.body());
+                }else if(response.code() == 500){
+                    Toast.makeText(MessageActivity.this,"Server error, please try again.",Toast.LENGTH_LONG).show();
+                }else if(response.body().result.equals("nok"));{
+                    Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
+                    Log.i(LOG_TAG, "The result is: " + response.body());
+                }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(MessageActivity.this,"Error, please check your connection and try again.",Toast.LENGTH_LONG);
+                Toast.makeText(MessageActivity.this,"Error, please check your connection and try again.",Toast.LENGTH_LONG).show();
             }
         });
     }
