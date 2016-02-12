@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MyActivity";
     private EditText ed;
     private LocationManager locationManager;
-    private Location loc;
+    public static Location loc;
     private boolean enable;
-    private boolean accurate;
+    private boolean accurate = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             Log.i(TAG, "is gps enabled:" + locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER));
             Log.i(TAG, "is network enabled:" + locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER));
-           // Log.i(TAG, "location: " + loc.getAccuracy());
+            if(loc!=null)
+                Log.i(TAG, "location: " + loc.getAccuracy());
         }else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -100,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 //should also check if bool accurate is true
-                if(!ed.getText().toString().trim().equals("")){
+                if(accurate&&!ed.getText().toString().trim().equals("")){
                     button.setVisibility(View.VISIBLE);
                 }else{
                     button.setVisibility(View.INVISIBLE);
@@ -130,15 +131,23 @@ public class MainActivity extends AppCompatActivity {
         }
         super.onResume();
     }
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+
+    }
 
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(Location location) {
             Log.i(TAG,"accuracy:"+location.getAccuracy());
-            loc=location;
             if(location.getAccuracy()<=50){
                 accurate = true;
-                 loc=location;
+                loc=location;
+                Button button = (Button)findViewById(R.id.button);
+                if(accurate&&!ed.getText().toString().trim().equals("")){
+                    button.setVisibility(View.VISIBLE);
+                }
             }
         }
 

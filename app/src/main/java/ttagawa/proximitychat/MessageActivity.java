@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.location.Location;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -20,6 +21,7 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class MessageActivity extends AppCompatActivity {
@@ -77,8 +79,9 @@ public class MessageActivity extends AppCompatActivity {
         SecureRandomString ran = new SecureRandomString();
         String message_id = ran.nextString();
         String message = ed.getText().toString();
+        Log.i(LOG_TAG,"latitude:"+MainActivity.loc.getLatitude());
         Call<Post> queryResponseCall =
-                service.post_message(111,111,userId,nickname,message,message_id);
+                service.post_message((float) MainActivity.loc.getLatitude(), (float) MainActivity.loc.getLongitude(), userId, nickname, message, message_id);
 
         //Call retrofit asynchronously
         queryResponseCall.enqueue(new Callback<Post>() {
@@ -113,9 +116,10 @@ public class MessageActivity extends AppCompatActivity {
                 .build();
 
         getService service = retrofit.create(getService.class);
+        Log.i(LOG_TAG,"latitude2:"+MainActivity.loc.getLatitude());
 
         Call<GetMessages> queryResponseCall =
-                service.get_messages(111,111,userId);
+                service.get_messages((float)MainActivity.loc.getLatitude(),(float)MainActivity.loc.getLongitude(),userId);
 
         //Call retrofit asynchronously
         queryResponseCall.enqueue(new Callback<GetMessages>() {
@@ -134,7 +138,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     public interface postService{
-        @GET("default/post_message")
+        @POST("default/post_message")
         Call<Post> post_message(@Query("lat") float latitude,@Query("lng") float longitude,
                                 @Query("user_id") String user_id,@Query("nickname") String nickname,
                                 @Query("message") String message,@Query("message_id") String message_id);
