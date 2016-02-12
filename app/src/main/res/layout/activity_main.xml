@@ -48,5 +48,15 @@
         android:layout_marginTop="33dp"
         android:onClick="startChat"
         android:visibility="invisible" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/EnableGPS"
+        android:id="@+id/GPSbutton"
+        android:onClick="toggleGPS"
+        android:layout_marginBottom="74dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>
 </ScrollView>

@@ -2,4 +2,7 @@
     <string name="app_name">ProximityChat</string>
     <string name="enterNickname">Enter a nickname:</string>
     <string name="startChat">Start Chat</string>
+    <string name="EnableGPS">Enable GPS</string>
+    <string name="Send">Send</string>
+    <string name="Refresh">Refresh</string>
 </resources>
