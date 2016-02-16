@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.location.Location;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import okhttp3.OkHttpClient;
@@ -96,6 +97,7 @@ public class MessageActivity extends AppCompatActivity {
         String nickname = pref.getString("nickname", "");
         SecureRandomString ran = new SecureRandomString();
         String message_id = ran.nextString();
+        Log.i(LOG_TAG,"message_id:"+message_id);
         String message = ed.getText().toString();
         Log.i(LOG_TAG,"latitude:"+MainActivity.loc.getLatitude());
         Call<Post> queryResponseCall =
@@ -104,6 +106,8 @@ public class MessageActivity extends AppCompatActivity {
         temp.message = message;
         temp.userId = userId;
         ad.add(temp);
+        ListView lv = (ListView) findViewById(R.id.listView);
+        lv.smoothScrollToPosition(lv.getCount()-1);
 
         //Call retrofit asynchronously
         queryResponseCall.enqueue(new Callback<Post>() {
@@ -157,26 +161,31 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onResponse(Response<GetMessages> response) {
                 Log.i(LOG_TAG, "Code is: " + response.code());
-                if(response.code() == 200) {
+                if (response.code() == 200) {
                     Log.i(LOG_TAG, "The result is: " + response.body());
-                    if(response.body().result.equals("ok")){
-                        Log.i(LOG_TAG,"response proper");
-                        MyAdapter ad = new MyAdapter(MessageActivity.this,R.layout.rowtext,response.body().resultList);
+                    if (response.body().result.equals("ok")) {
+                        Log.i(LOG_TAG, "response proper");
+                        List<ResultList> reslist = response.body().resultList;
+                        Collections.reverse(reslist);
+                        ad = new MyAdapter(MessageActivity.this, R.layout.rowtext, reslist);
                         ListView lv = (ListView) findViewById(R.id.listView);
                         lv.setAdapter(ad);
-                    }else{
-                        Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
+                        lv.smoothScrollToPosition(lv.getCount()- 1);
+                        lv.setSelection(lv.getCount()-1);
+                    } else {
+                        Toast.makeText(MessageActivity.this, "Application error, please try again.", Toast.LENGTH_LONG).show();
                         Log.i(LOG_TAG, "The result is: " + response.body());
                     }
-                }else if(response.code() == 500){
-                    Toast.makeText(MessageActivity.this,"Server error, please try again.",Toast.LENGTH_LONG).show();
+                } else if (response.code() == 500) {
+                    Toast.makeText(MessageActivity.this, "Server error, please try again.", Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
                 // Log error here since request failed
-                Toast.makeText(MessageActivity.this,"Error, please check your connection and try again.",Toast.LENGTH_LONG).show();
+                Log.w(LOG_TAG, t.getMessage());
+                Toast.makeText(MessageActivity.this, "Error, please check your connection and try again.", Toast.LENGTH_LONG).show();
             }
         });
     }

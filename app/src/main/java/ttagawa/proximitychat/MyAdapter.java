@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -49,10 +50,10 @@ public class MyAdapter extends ArrayAdapter<ResultList> {
         Log.i("uid","userid:"+settings.getString("user_id",""));
         Log.i("uid","resuld id:"+w.userId);
         if(w.userId.equals(settings.getString("user_id",""))){
-            tv.setBackgroundColor(Color.GREEN);
+          //  tv.setBackgroundColor(Color.GREEN);
             tv.setGravity(Gravity.RIGHT);
         }else{
-            tv.setBackgroundColor(Color.TRANSPARENT);
+            //tv.setBackgroundColor(Color.TRANSPARENT);
             tv.setGravity(Gravity.LEFT);
         }
         return newView;

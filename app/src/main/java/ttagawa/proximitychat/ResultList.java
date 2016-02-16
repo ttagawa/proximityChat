@@ -20,6 +20,6 @@ public class ResultList {
     public String userId;
     @SerializedName("message_id")
     @Expose
-    public Integer messageId;
+    public String messageId;
 
 }
