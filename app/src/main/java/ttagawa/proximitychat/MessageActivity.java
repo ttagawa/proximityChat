@@ -10,8 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 import android.location.Location;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -29,6 +33,8 @@ public class MessageActivity extends AppCompatActivity {
     private String userId;
     private SharedPreferences pref;
     private EditText ed;
+    private List<ResultList> list = new ArrayList<>();
+    private MyAdapter ad;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,13 +57,25 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 //should also check if bool accurate is true
-                if(!ed.getText().toString().trim().equals("")){
+                if (!ed.getText().toString().trim().equals("")) {
                     button.setEnabled(true);
-                }else{
+                } else {
                     button.setEnabled(false);
                 }
             }
         });
+        List<ResultList> rl = new ArrayList<>(10);
+        ResultList r = new ResultList();
+        r.message = "Testing hi hi hih ihih i hi hi hih ihi hi hidjakjflajdjakldjaldjfajsdlafkldjflkjaldjfladfjk";
+        r.userId = "123";
+        ResultList r2 = new ResultList();
+        r2.message = "Test2 hih ih ih ih i hi iadkf akdjf lajljadjfalsjfkal jkl jdklfaj edlkjdkajfkjkajf a ;a";
+        r2.userId = userId;
+        rl.add(r);
+        rl.add(r2);
+        ad = new MyAdapter(MessageActivity.this,R.layout.rowtext,rl);
+        ListView lv = (ListView) findViewById(R.id.listView);
+        lv.setAdapter(ad);
     }
 
     public void postMessage(View v){
@@ -82,6 +100,10 @@ public class MessageActivity extends AppCompatActivity {
         Log.i(LOG_TAG,"latitude:"+MainActivity.loc.getLatitude());
         Call<Post> queryResponseCall =
                 service.post_message((float) MainActivity.loc.getLatitude(), (float) MainActivity.loc.getLongitude(), userId, nickname, message, message_id);
+        ResultList temp = new ResultList();
+        temp.message = message;
+        temp.userId = userId;
+        ad.add(temp);
 
         //Call retrofit asynchronously
         queryResponseCall.enqueue(new Callback<Post>() {
@@ -89,13 +111,15 @@ public class MessageActivity extends AppCompatActivity {
             public void onResponse(Response<Post> response) {
                 Log.i(LOG_TAG, "Code is: " + response.code());
                 if(response.code() == 200) {
-                    ed.setText("");
-                    Log.i(LOG_TAG, "The result is: " + response.body());
+                    if(response.body().result.equals("nok")){
+                        Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
+                        Log.i(LOG_TAG, "The result is: " + response.body());
+                    }else {
+                        ed.setText("");
+                        Log.i(LOG_TAG, "The result is: " + response.body());
+                    }
                 }else if(response.code() == 500){
                     Toast.makeText(MessageActivity.this,"Server error, please try again.",Toast.LENGTH_LONG).show();
-                }else if(response.body().result.equals("nok"));{
-                    Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
-                    Log.i(LOG_TAG, "The result is: " + response.body());
                 }
             }
 
@@ -135,11 +159,17 @@ public class MessageActivity extends AppCompatActivity {
                 Log.i(LOG_TAG, "Code is: " + response.code());
                 if(response.code() == 200) {
                     Log.i(LOG_TAG, "The result is: " + response.body());
+                    if(response.body().result.equals("ok")){
+                        Log.i(LOG_TAG,"response proper");
+                        MyAdapter ad = new MyAdapter(MessageActivity.this,R.layout.rowtext,response.body().resultList);
+                        ListView lv = (ListView) findViewById(R.id.listView);
+                        lv.setAdapter(ad);
+                    }else{
+                        Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
+                        Log.i(LOG_TAG, "The result is: " + response.body());
+                    }
                 }else if(response.code() == 500){
                     Toast.makeText(MessageActivity.this,"Server error, please try again.",Toast.LENGTH_LONG).show();
-                }else if(response.body().result.equals("nok"));{
-                    Toast.makeText(MessageActivity.this,"Application error, please try again.",Toast.LENGTH_LONG).show();
-                    Log.i(LOG_TAG, "The result is: " + response.body());
                 }
             }
 
