@@ -140,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onLocationChanged(Location location) {
             Log.i(TAG,"accuracy:"+location.getAccuracy());
-            if(location.getAccuracy()<=50){
+            //changed to 100 cause the gps on my phone is bad and was worried other peoples could be the same
+            if(location.getAccuracy()<=100){
                 accurate = true;
                 loc=location;
                 Button button = (Button)findViewById(R.id.button);

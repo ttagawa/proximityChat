@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -47,14 +48,11 @@ public class MyAdapter extends ArrayAdapter<ResultList> {
             newView = (LinearLayout) convertView;
         }
         TextView tv = (TextView) newView.findViewById(R.id.rowTextView);
-        Log.i("nickname","nickname:"+w.nickname);
-        tv.setText(Html.fromHtml(w.message+"<br>"+"<small>"+w.nickname+"</small>"));
+        tv.setText(Html.fromHtml(w.message + "<br>" + "<small>" + w.nickname + "</small>"));
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-        Log.i("uid","userid:"+settings.getString("user_id",""));
-        Log.i("uid","resuld id:"+w.userId);
         if(w.userId.equals(settings.getString("user_id",""))){
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.setMargins(400,0,0,50);
+            lp.setMargins(400, 0, 0, 50);
             tv.setLayoutParams(lp);
             tv.setText(Html.fromHtml(w.message + "<br>" + "<small>" + w.nickname +"(you)" + "</small>"));
         }else{

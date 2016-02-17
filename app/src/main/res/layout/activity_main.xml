@@ -16,24 +16,16 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="ttagawa.proximitychat.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="@string/enterNickname"
-        android:id="@+id/textView"
-        android:layout_marginTop="120dp"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/editText"
-        android:layout_below="@+id/textView"
-        android:layout_alignLeft="@+id/textView"
-        android:layout_alignStart="@+id/textView"
-        android:inputType="text" />
+        android:hint="Enter a nickname"
+        android:inputType="text"
+        android:layout_marginTop="84dp"
+        android:layout_alignParentTop="true"
+        android:imeOptions="actionDone"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"

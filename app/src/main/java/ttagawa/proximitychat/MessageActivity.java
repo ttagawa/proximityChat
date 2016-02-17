@@ -8,6 +8,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -64,11 +65,12 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
         });
+        getMessages(findViewById(R.id.refreshButton));
         ListView lv = (ListView) findViewById(R.id.listView);
-        lv.setAdapter(ad);
-        getMessages(findViewById(R.id.refreshButton));
-        getMessages(findViewById(R.id.refreshButton));
-        lv.smoothScrollToPosition(lv.getCount() - 1);
+        lv.smoothScrollToPositionFromTop(lv.getCount()-1,0);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN
+        );
     }
 
     public void postMessage(View v){
@@ -145,7 +147,6 @@ public class MessageActivity extends AppCompatActivity {
 
         getService service = retrofit.create(getService.class);
         Log.i(LOG_TAG,"latitude2:"+MainActivity.loc.getLatitude());
-
         Call<GetMessages> queryResponseCall =
                 service.get_messages((float)MainActivity.loc.getLatitude(),(float)MainActivity.loc.getLongitude(),userId);
 
@@ -157,14 +158,13 @@ public class MessageActivity extends AppCompatActivity {
                 if (response.code() == 200) {
                     Log.i(LOG_TAG, "The result is: " + response.body());
                     if (response.body().result.equals("ok")) {
-                        Log.i(LOG_TAG, "response proper");
                         List<ResultList> reslist = response.body().resultList;
                         Collections.reverse(reslist);
                         ad = new MyAdapter(MessageActivity.this, R.layout.rowtext, reslist);
                         ListView lv = (ListView) findViewById(R.id.listView);
                         lv.setAdapter(ad);
-                        lv.smoothScrollToPosition(lv.getCount() - 1);
-                        lv.setSelection(lv.getCount() - 1);
+                        lv.smoothScrollToPosition(ad.getCount() - 1);
+                        lv.setSelection(ad.getCount() - 1);
                     } else {
                         Toast.makeText(MessageActivity.this, "Application error, please try again.", Toast.LENGTH_LONG).show();
                         Log.i(LOG_TAG, "The result is: " + response.body());
