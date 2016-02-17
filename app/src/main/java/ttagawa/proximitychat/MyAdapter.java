@@ -1,9 +1,11 @@
 package ttagawa.proximitychat;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -45,16 +47,20 @@ public class MyAdapter extends ArrayAdapter<ResultList> {
             newView = (LinearLayout) convertView;
         }
         TextView tv = (TextView) newView.findViewById(R.id.rowTextView);
-        tv.setText(w.message);
+        Log.i("nickname","nickname:"+w.nickname);
+        tv.setText(Html.fromHtml(w.message+"<br>"+"<small>"+w.nickname+"</small>"));
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
         Log.i("uid","userid:"+settings.getString("user_id",""));
         Log.i("uid","resuld id:"+w.userId);
         if(w.userId.equals(settings.getString("user_id",""))){
-          //  tv.setBackgroundColor(Color.GREEN);
-            tv.setGravity(Gravity.RIGHT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(400,0,0,50);
+            tv.setLayoutParams(lp);
+            tv.setText(Html.fromHtml(w.message + "<br>" + "<small>" + w.nickname +"(you)" + "</small>"));
         }else{
-            //tv.setBackgroundColor(Color.TRANSPARENT);
-            tv.setGravity(Gravity.LEFT);
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp.setMargins(0, 0, 400, 50);
+            tv.setLayoutParams(lp);
         }
         return newView;
     }

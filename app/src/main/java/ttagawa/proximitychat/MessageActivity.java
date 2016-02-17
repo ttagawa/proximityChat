@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.location.Location;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -65,18 +64,11 @@ public class MessageActivity extends AppCompatActivity {
                 }
             }
         });
-        List<ResultList> rl = new ArrayList<>(10);
-        ResultList r = new ResultList();
-        r.message = "Testing hi hi hih ihih i hi hi hih ihi hi hidjakjflajdjakldjaldjfajsdlafkldjflkjaldjfladfjk";
-        r.userId = "123";
-        ResultList r2 = new ResultList();
-        r2.message = "Test2 hih ih ih ih i hi iadkf akdjf lajljadjfalsjfkal jkl jdklfaj edlkjdkajfkjkajf a ;a";
-        r2.userId = userId;
-        rl.add(r);
-        rl.add(r2);
-        ad = new MyAdapter(MessageActivity.this,R.layout.rowtext,rl);
         ListView lv = (ListView) findViewById(R.id.listView);
         lv.setAdapter(ad);
+        getMessages(findViewById(R.id.refreshButton));
+        getMessages(findViewById(R.id.refreshButton));
+        lv.smoothScrollToPosition(lv.getCount() - 1);
     }
 
     public void postMessage(View v){
@@ -104,6 +96,7 @@ public class MessageActivity extends AppCompatActivity {
                 service.post_message((float) MainActivity.loc.getLatitude(), (float) MainActivity.loc.getLongitude(), userId, nickname, message, message_id);
         ResultList temp = new ResultList();
         temp.message = message;
+        temp.nickname = nickname;
         temp.userId = userId;
         ad.add(temp);
         ListView lv = (ListView) findViewById(R.id.listView);
@@ -170,8 +163,8 @@ public class MessageActivity extends AppCompatActivity {
                         ad = new MyAdapter(MessageActivity.this, R.layout.rowtext, reslist);
                         ListView lv = (ListView) findViewById(R.id.listView);
                         lv.setAdapter(ad);
-                        lv.smoothScrollToPosition(lv.getCount()- 1);
-                        lv.setSelection(lv.getCount()-1);
+                        lv.smoothScrollToPosition(lv.getCount() - 1);
+                        lv.setSelection(lv.getCount() - 1);
                     } else {
                         Toast.makeText(MessageActivity.this, "Application error, please try again.", Toast.LENGTH_LONG).show();
                         Log.i(LOG_TAG, "The result is: " + response.body());
